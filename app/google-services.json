@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "490895615457",
+    "project_id": "login-register-b0daa",
+    "storage_bucket": "login-register-b0daa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490895615457:android:9d1bd0eb578f0d10fe9ea0",
+        "android_client_info": {
+          "package_name": "com.example.qrscanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIsb5EMlshzYNes3ZjdLCxCAg2SkWFI68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
