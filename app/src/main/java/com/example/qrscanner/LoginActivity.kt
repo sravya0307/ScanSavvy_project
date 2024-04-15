@@ -29,6 +29,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import android.widget.TextView
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginUsername: EditText
@@ -37,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var signupRedirect: TextView
     private lateinit var forgotPass: TextView
     private lateinit var loginProgressBar: ProgressBar
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     private lateinit var auth: FirebaseAuth
 
@@ -67,9 +70,10 @@ class LoginActivity : AppCompatActivity() {
                         // Sign in success
                         Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
                         // Redirect user to another activity or perform further actions
-                        val intent = Intent(this,HealthInfoActivity::class.java)
                         startActivity(intent)
                         finish()
+                        // Redirect user to another activity or perform further actions
+
                     } else {
                         // Sign in failed
                         Toast.makeText(this, "Login failed. ${task.exception?.message}",

@@ -2,4 +2,5 @@
     <string name="app_name">Qrscanner</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_web_client_id">490895615457-8hhnqb28um3k5f3p1knlhhn10bmhqvvt.apps.googleusercontent.com</string>
 </resources>

@@ -87,6 +87,8 @@ class SignUpActivity : AppCompatActivity() {
 
     }
 }*/
+import com.google.android.gms.common.api.ApiException
+
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -97,6 +99,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import android.widget.TextView
 import android.content.Intent
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+
 
 
 class SignUpActivity : AppCompatActivity() {
@@ -108,15 +118,21 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var signUpButton: Button
     private lateinit var loginRedirect: TextView
     private lateinit var signupProgressBar: ProgressBar
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var gButton: Button
+    private val REQ_ONE_TAP = 297  // Can be any integer unique to the Activity
+    private var showOneTapUI = true
+
+
 
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
+        val RC_SIGN_IN = 9001
 
         auth = FirebaseAuth.getInstance()
-
         signUpUsername = findViewById(R.id.signupUsername)
         signUpEmail = findViewById(R.id.signupEmail)
         signUpPassword = findViewById(R.id.signupPassword)
@@ -124,6 +140,28 @@ class SignUpActivity : AppCompatActivity() {
         signUpButton = findViewById(R.id.signupButton)
         loginRedirect = findViewById(R.id.loginRedirect)
         signupProgressBar = findViewById(R.id.signupprogressBar)
+        gButton=findViewById(R.id.gButton)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        gButton.setOnClickListener {
+            if (googleSignInClient == null) {
+                googleSignInClient = GoogleSignIn.getClient(this, gso)
+            }
+            val intent = googleSignInClient!!.signInIntent
+            signInLauncher.launch(intent)
+        }
+
+
+
+
+
+
+
+
 
         signUpButton.setOnClickListener {
             val user = signUpUsername.text.toString()
@@ -148,7 +186,10 @@ class SignUpActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         // Sign up success
                         Toast.makeText(this, "Sign up successful", Toast.LENGTH_SHORT).show()
+                        val intent=Intent(this,HealthInfoActivity::class.java)
                         // Redirect user to another activity or perform further actions
+                        startActivity(intent)
+                        finish()
                     } else {
                         // Sign up failed
                         Toast.makeText(this, "Sign up failed. ${task.exception?.message}",
@@ -163,6 +204,41 @@ class SignUpActivity : AppCompatActivity() {
             startActivity(Intent(this@SignUpActivity, LoginActivity::class.java))
 
         }
+
     }
+
+
+
+    private val signInLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.result
+                handleSignedInAccount(account)
+            } catch (e: ApiException) {
+                // Sign in failed
+                //Log.w("GoogleSignIn", "signInResult:failed code=" + e.statusCode)
+                // Handle sign-in failure (e.g., show a snackbar with an error message)
+            }
+        }
+    }
+    private fun handleSignedInAccount(account: GoogleSignInAccount) {
+        val idToken = account.idToken
+        val email = account.email
+
+        // Send the ID token to your server for authentication (if applicable)
+        // Use the email address for further processing (e.g., display user information)
+        // Update UI to reflect signed-in state (optional)
+    }
+
+
+
+
+
 }
+
+
+
 
