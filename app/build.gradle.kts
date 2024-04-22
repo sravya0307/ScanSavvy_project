@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.qrscanner"
-        minSdk = 21
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -45,6 +45,16 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.mlkit:barcode-scanning:17.0.2")
     implementation("androidx.camera:camera-core:1.3.2")
+//    volley
+    implementation("com.android.volley:volley:1.2.1")
+//    gson
+    implementation("com.google.code.gson:gson:2.10.1")
+//    glide-for pictures
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+//    firebase
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.google.android.gms:play-services-auth:19.2.0")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
