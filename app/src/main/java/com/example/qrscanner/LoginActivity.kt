@@ -1,35 +1,25 @@
 package com.example.qrscanner
 import android.content.Intent
-//import com.yourpackage.name.SignUpActivity // Import SignUpActivity from your package
-
-/*class LoginActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        val loginButton=findViewById<Button>(R.id.loginButton)
-        val signupredirect=findViewById<TextView>(R.id.signupRedirect)
-        signupredirect.setOnClickListener {
-            val intent= Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-        loginButton.setOnClickListener {
-            val intent= Intent(this, BottomNavigationActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-    }
-}*/
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
+
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -40,8 +30,13 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var forgotPass: TextView
     private lateinit var loginProgressBar: ProgressBar
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var gButton:Button
 
     private lateinit var auth: FirebaseAuth
+
+    private var f = 0
+
+    private lateinit var signInLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,41 +49,90 @@ class LoginActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.loginButton)
         signupRedirect = findViewById(R.id.signupRedirect)
         loginProgressBar = findViewById(R.id.loginprogressBar)
-        forgotPass=findViewById(R.id.forgotPass)
+        forgotPass = findViewById(R.id.forgotPass)
+        gButton = findViewById(R.id.gButton)
+
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            startActivity(Intent(this, BottomNavigationActivity::class.java))
+            finish()
+            return
+        }
 
         loginButton.setOnClickListener {
             val email = loginUsername.text.toString()
             val password = loginPassword.text.toString()
+            if(email==null || password==null){
+                Toast.makeText(this,"enter details!..",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-            // Show ProgressBar
             loginProgressBar.visibility = View.VISIBLE
 
-            // Authenticate user with email and password
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        // Sign in success
                         Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                        // Redirect user to another activity or perform further actions
-                        startActivity(intent)
+                        startActivity(Intent(this, BottomNavigationActivity::class.java))
                         finish()
-                        // Redirect user to another activity or perform further actions
-
                     } else {
-                        // Sign in failed
-                        Toast.makeText(this, "Login failed. ${task.exception?.message}",
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Login failed. ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                     }
-                    // Hide ProgressBar
                     loginProgressBar.visibility = View.GONE
                 }
+        }
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    if (account != null) {
+                        firebaseAuthWithGoogle(account.idToken!!)
+                        startActivity(Intent(this,HealthInfoActivity::class.java))
+                    }
+                } catch (e: ApiException) {
+                    Log.e("GoogleSignIn", "signInResult:failed code=${e.statusCode}")
+                    Toast.makeText(this, "Sign in failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        gButton.setOnClickListener {
+            val signInIntent = googleSignInClient.signInIntent
+            signInLauncher.launch(signInIntent)
         }
 
         signupRedirect.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
-        forgotPass.setOnClickListener{
-            startActivity(Intent(this,forgotpass::class.java))
+
+        forgotPass.setOnClickListener {
+            startActivity(Intent(this, forgotPass::class.java))
         }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    // If sign in succeeds, update UI with the signed-in user's information
+                    // ...
+                    f = 1
+                    startActivity(Intent(this, BottomNavigationActivity::class.java))
+                    finish()
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 }

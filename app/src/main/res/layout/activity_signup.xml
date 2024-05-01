@@ -124,6 +124,7 @@
         android:backgroundTint="@color/white"
         android:text="signin with google"
         android:textSize="18sp"
+        android:drawableLeft="@drawable/googlepic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/loginRedirect"
         app:layout_constraintEnd_toEndOf="parent"

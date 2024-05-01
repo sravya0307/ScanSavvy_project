@@ -97,8 +97,8 @@
         android:id="@+id/selectCard"
         android:layout_width="200dp"
         android:layout_height="35dp"
-        android:layout_marginTop="20dp"
         android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="5dp"
         app:cardElevation="10dp"
@@ -130,5 +130,29 @@
         </RelativeLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <Button
+        android:id="@+id/savee"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="27dp"
+        android:text="Save"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/skipp"
+        app:layout_constraintTop_toBottomOf="@+id/selectCard"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp" />
+
+    <Button
+        android:id="@+id/skipp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Skip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/savee"
+        app:layout_constraintTop_toBottomOf="@+id/selectCard"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

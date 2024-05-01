@@ -26,7 +26,7 @@ class BottomNavigationActivity : AppCompatActivity() {
         val toolbar=findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_id)
         val iconprofile=findViewById<ImageView>(R.id.profile_icon)
         iconprofile.setOnClickListener {
-            val intent= Intent(this, HealthInfoActivity::class.java)
+            val intent= Intent(this, profile_page::class.java)
             startActivity(intent)
             finish()
         }
