@@ -14,10 +14,10 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONObject
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
-//    var value:String?=intent.getStringExtra("abc")
-    val url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCHhKB_3H4NyEIuTawShVFQ_ECOgPbc39M&cx=638f013618ba54b79&q=light_bulbs"
+    lateinit var url:String
     lateinit var constview:androidx.constraintlayout.widget.ConstraintLayout
     lateinit var recview:RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +26,9 @@ class MainActivity : AppCompatActivity() {
         constview=findViewById(R.id.con)
         recview=constview.findViewById(R.id.recyview)
         recview.layoutManager = LinearLayoutManager(this)
+
+        val search_query=intent.getStringExtra("abc")
+        url= "https://www.googleapis.com/customsearch/v1?key=AIzaSyCHhKB_3H4NyEIuTawShVFQ_ECOgPbc39M&cx=638f013618ba54b79&q={$search_query}"
 
         process_data()
 

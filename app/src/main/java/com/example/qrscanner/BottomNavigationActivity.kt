@@ -3,10 +3,12 @@ package com.example.qrscanner
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintSet.Constraint
@@ -36,7 +38,8 @@ class BottomNavigationActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEARCH) {
                 // Perform your action here
                 val pass_search_query=searchtext.text.toString()
-                val intent = Intent(this, MainActivity::class.java)
+                Toast.makeText(this, pass_search_query, Toast.LENGTH_LONG).show()
+                val intent = Intent(this@BottomNavigationActivity, MainActivity::class.java)
                 intent.putExtra("abc",pass_search_query )
                 startActivity(intent)
                 true
